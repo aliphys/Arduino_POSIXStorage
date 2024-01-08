@@ -1,0 +1,27 @@
+name: clang-format Check
+
+on:
+    push:
+    pull_request:
+    schedule:
+      # Run every Tuesday at 8 AM UTC to catch breakage caused by new rules added to Arduino Lint.
+      - cron: "0 8 * * TUE"
+    workflow_dispatch:
+    repository_dispatch:
+        
+jobs:
+  formatting-check:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - 'src'
+          - 'examples'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run clang-format on ${{ matrix.path }}
+      uses: jidicula/clang-format-action@v4
+      with:
+        clang-format-version: '13'
+        check-path: ${{ matrix.path }}
